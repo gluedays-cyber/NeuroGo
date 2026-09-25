@@ -4,9 +4,9 @@ import (
 	"fmt"
 )
 
-train "examples/intent/intent_model.gow" {
+train "intent_model.gow" {
 	format: "csv",
-	source: "examples/intent/dataset.csv",
+	source: "dataset.csv",
 	input:  "text",
 	target: "label",
 	epochs: 40,
@@ -15,7 +15,7 @@ train "examples/intent/intent_model.gow" {
 func handleQuery(query string) {
 	fmt.Printf("\n[User Input] %s\n", query)
 
-	match query using "examples/intent/intent_model.gow" {
+	match query using "intent_model.gow" {
 	case "Refund" score >= 0.70:
 		fmt.Println(">> [Routing] Connecting to Refund & Billing Specialist...")
 	case "Delivery" score >= 0.70:
