@@ -10,8 +10,8 @@ import (
 type TrainConfig struct {
 	WeightPath string
 	Source     string
-	Input      string
-	Target     string
+	InputCol   string
+	TargetCol  string
 	Epochs     int
 	Format     string
 }
@@ -22,7 +22,6 @@ var (
 	matchStartRegex = regexp.MustCompile(`^\s*match\s+(.+?)\s+using\s+"([^"]+)"\s*\{\s*$`)
 
 	// Matches: case "<label>" score >= <identifier_or_number>:
-	// [a-zA-Z0-9_\.] 패턴을 통해 숫자 리터럴(0.85)뿐만 아니라 변수명, 상수명(DefaultThreshold 등) 허용
 	caseScoreRegex = regexp.MustCompile(`^\s*case\s+"([^"]+)"\s+score\s*>=\s*([a-zA-Z0-9_\.]+)\s*:\s*$`)
 
 	// Matches: default:
