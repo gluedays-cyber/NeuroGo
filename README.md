@@ -128,6 +128,7 @@ From the root directory of the repository, install the `ngo` command:
 
 ```bash
 go install ./cmd/ngo
+go install ./cmd/ngotrain
 ```
 
 **Why `go install`?**
