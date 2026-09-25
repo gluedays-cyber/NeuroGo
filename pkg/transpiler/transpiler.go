@@ -6,176 +6,125 @@ import (
 	"strings"
 )
 
-// TrainConfig holds the parsed metadata from a `train` block in .ngo source.
-type TrainConfig struct {
-	WeightPath string
-	Format     string
-	Source     string
-	InputCol   string
-	TargetCol  string
-	Epochs     int
-}
+// Regex patterns for NeuroGo syntax
+var (
+	// Matches: match <target> using "<modelPath>" {
+	matchStartRegex = regexp.MustCompile(`^\s*match\s+(.+?)\s+using\s+"([^"]+)"\s*\{\s*$`)
 
-// Transpile converts a NeuroGo (.ngo) source code string into valid standard Go (.go) code.
-func Transpile(source string) (string, []TrainConfig, error) {
-	trainConfigs, strippedSource, err := extractTrainBlocks(source)
-	if err != nil {
-		return "", nil, err
-	}
+	// Matches: case "<label>" score >= <identifier_or_number>:
+	// [a-zA-Z0-9_\.] 패턴을 통해 숫자 리터럴(0.85)뿐만 아니라 변수명, 상수명(DefaultThreshold 등) 허용
+	caseScoreRegex = regexp.MustCompile(`^\s*case\s+"([^"]+)"\s+score\s*>=\s*([a-zA-Z0-9_\.]+)\s*:\s*$`)
 
-	transformedSource, err := transformMatchBlocks(strippedSource)
-	if err != nil {
-		return "", nil, err
-	}
+	// Matches: default:
+	defaultRegex = regexp.MustCompile(`^\s*default\s*:\s*$`)
+)
 
-	finalSource := ensureRuntimeImport(transformedSource)
-	return finalSource, trainConfigs, nil
-}
+// Transpile converts .ngo source code into standard Go code, returning (goCode, referencedModels, error).
+func Transpile(source string) (string, []string, error) {
+	lines := strings.Split(source, "\n")
+	var output []string
+	var models []string
 
-// extractTrainBlocks extracts `train` declarations and replaces them with comments.
-var trainRegex = regexp.MustCompile(`(?s)train\s+"([^"]+)"\s*\{([^}]+)\}`)
+	inMatchBlock := false
+	matchVarIndex := 0
 
-func extractTrainBlocks(src string) ([]TrainConfig, string, error) {
-	var configs []TrainConfig
-	matches := trainRegex.FindAllStringSubmatchIndex(src, -1)
-	if len(matches) == 0 {
-		return configs, src, nil
-	}
+	for lineNum, line := range lines {
+		trimmed := strings.TrimSpace(line)
 
-	var sb strings.Builder
-	lastIdx := 0
-
-	for _, m := range matches {
-		sb.WriteString(src[lastIdx:m[0]])
-		weightPath := src[m[2]:m[3]]
-		body := src[m[4]:m[5]]
-
-		cfg := TrainConfig{
-			WeightPath: weightPath,
-			Epochs:     30,
-			Format:     "csv",
-			InputCol:   "text",
-			TargetCol:  "label",
-		}
-
-		// Simple key-value parser for train body
-		lines := strings.Split(body, "\n")
-		for _, line := range lines {
-			line = strings.TrimSpace(line)
-			if strings.HasPrefix(line, "format:") {
-				cfg.Format = extractStringVal(line)
-			} else if strings.HasPrefix(line, "source:") {
-				cfg.Source = extractStringVal(line)
-			} else if strings.HasPrefix(line, "input:") {
-				cfg.InputCol = extractStringVal(line)
-			} else if strings.HasPrefix(line, "target:") {
-				cfg.TargetCol = extractStringVal(line)
-			} else if strings.HasPrefix(line, "epochs:") {
-				var ep int
-				fmt.Sscanf(line, "epochs: %d", &ep)
-				if ep > 0 {
-					cfg.Epochs = ep
-				}
+		// 1. Detect 'match ... using ... {'
+		if matchStartRegex.MatchString(trimmed) {
+			if inMatchBlock {
+				return "", nil, fmt.Errorf("line %d: nested match blocks are not supported", lineNum+1)
 			}
+			matches := matchStartRegex.FindStringSubmatch(trimmed)
+			targetExpr := matches[1]
+			modelPath := matches[2]
+
+			models = append(models, modelPath)
+			inMatchBlock = true
+			varName := fmt.Sprintf("_ngoMatch%d", matchVarIndex)
+			matchVarIndex++
+
+			indent := getLeadingWhitespace(line)
+
+			// Generate Go runtime match invocation and switch header
+			output = append(output, fmt.Sprintf("%s{", indent))
+			output = append(output, fmt.Sprintf("%s\t%s := runtime.Match(\"%s\", %s)", indent, varName, modelPath, targetExpr))
+			output = append(output, fmt.Sprintf("%s\tswitch {", indent))
+			continue
 		}
 
-		configs = append(configs, cfg)
-		sb.WriteString(fmt.Sprintf("/* [NeuroGo] train \"%s\" extracted for pre-compilation */", weightPath))
-		lastIdx = m[1]
+		// 2. Detect 'case "<label>" score >= <identifier_or_number>:'
+		if inMatchBlock && caseScoreRegex.MatchString(trimmed) {
+			matches := caseScoreRegex.FindStringSubmatch(trimmed)
+			label := matches[1]
+			threshold := matches[2]
+
+			indent := getLeadingWhitespace(line)
+			varName := fmt.Sprintf("_ngoMatch%d", matchVarIndex-1)
+
+			output = append(output, fmt.Sprintf("%scase %s.Label == \"%s\" && %s.Score >= %s:", indent, varName, label, varName, threshold))
+			continue
+		}
+
+		// 3. Detect 'default:'
+		if inMatchBlock && defaultRegex.MatchString(trimmed) {
+			output = append(output, line)
+			continue
+		}
+
+		// 4. Detect closing brace '}' for match block
+		if inMatchBlock && trimmed == "}" {
+			inMatchBlock = false
+			indent := getLeadingWhitespace(line)
+
+			// Close both the switch and the outer block scope
+			output = append(output, fmt.Sprintf("%s}", indent))
+			output = append(output, fmt.Sprintf("%s}", indent))
+			continue
+		}
+
+		// Standard Go lines pass through unchanged
+		output = append(output, line)
 	}
 
-	sb.WriteString(src[lastIdx:])
-	return configs, sb.String(), nil
-}
-
-func extractStringVal(line string) string {
-	parts := strings.SplitN(line, ":", 2)
-	if len(parts) < 2 {
-		return ""
+	if inMatchBlock {
+		return "", nil, fmt.Errorf("unexpected EOF: unclosed match block")
 	}
-	val := strings.TrimSpace(parts[1])
-	val = strings.Trim(val, `",; `)
-	return val
+
+	result := strings.Join(output, "\n")
+
+	// Ensure runtime package import exists if runtime.Match is invoked
+	if matchVarIndex > 0 && !strings.Contains(result, `"neurogo/pkg/runtime"`) && !strings.Contains(result, `"NeuroGo/pkg/runtime"`) && !strings.Contains(result, `"runtime"`) {
+		result = injectRuntimeImport(result)
+	}
+
+	return result, models, nil
 }
 
-// transformMatchBlocks converts `match <expr> using <weight> { ... }` into Go switch statements.
-var matchHeaderRegex = regexp.MustCompile(`match\s+(.+?)\s+using\s+"([^"]+)"\s*\{`)
-var caseScoreRegex = regexp.MustCompile(`case\s+"([^"]+)"\s+score\s*(>=|>|<=|<|==)\s*([0-9.]+)\s*:`)
-
-func transformMatchBlocks(src string) (string, error) {
-	// Find all match blocks
-	out := src
-	for {
-		loc := matchHeaderRegex.FindStringSubmatchIndex(out)
-		if loc == nil {
+func getLeadingWhitespace(s string) string {
+	var ws []rune
+	for _, r := range s {
+		if r == ' ' || r == '\t' {
+			ws = append(ws, r)
+		} else {
 			break
 		}
-
-		headerStart := loc[0]
-		bodyStart := loc[1] // right after '{'
-
-		expr := strings.TrimSpace(out[loc[2]:loc[3]])
-		weightPath := out[loc[4]:loc[5]]
-
-		// Find matching closing brace '}'
-		braceCount := 1
-		endIdx := -1
-		for i := bodyStart; i < len(out); i++ {
-			if out[i] == '{' {
-				braceCount++
-			} else if out[i] == '}' {
-				braceCount--
-				if braceCount == 0 {
-					endIdx = i
-					break
-				}
-			}
-		}
-
-		if endIdx == -1 {
-			return "", fmt.Errorf("unmatched brace in match block starting at offset %d", headerStart)
-		}
-
-		bodyContent := out[bodyStart:endIdx]
-
-		// Replace case clauses inside the body
-		transformedBody := caseScoreRegex.ReplaceAllStringFunc(bodyContent, func(caseClause string) string {
-			m := caseScoreRegex.FindStringSubmatch(caseClause)
-			if len(m) < 4 {
-				return caseClause
-			}
-			label := m[1]
-			op := m[2]
-			threshold := m[3]
-			return fmt.Sprintf("case _ngoMatch.Label == \"%s\" && _ngoMatch.Score %s %s:", label, op, threshold)
-		})
-
-		replacement := fmt.Sprintf("{\n\t_ngoMatch := runtime.Match(\"%s\", %s)\n\tswitch {\n%s\n\t}\n}",
-			weightPath, expr, transformedBody)
-
-		out = out[:headerStart] + replacement + out[endIdx+1:]
 	}
-
-	return out, nil
+	return string(ws)
 }
 
-// ensureRuntimeImport makes sure "neurogo/pkg/runtime" is imported in the generated Go code.
-func ensureRuntimeImport(src string) string {
-	if strings.Contains(src, `"neurogo/pkg/runtime"`) {
-		return src
+func injectRuntimeImport(code string) string {
+	importPattern := regexp.MustCompile(`import\s*\(([\s\S]*?)\)`)
+	if importPattern.MatchString(code) {
+		return importPattern.ReplaceAllString(code, "import (\n\t\"neurogo/pkg/runtime\"$1)")
 	}
 
-	pkgIdx := strings.Index(src, "package ")
-	if pkgIdx == -1 {
-		return src
+	singleImport := regexp.MustCompile(`import\s+"([^"]+)"`)
+	if singleImport.MatchString(code) {
+		return singleImport.ReplaceAllString(code, "import (\n\t\"neurogo/pkg/runtime\"\n\t\"$1\"\n)")
 	}
 
-	lineEnd := strings.Index(src[pkgIdx:], "\n")
-	if lineEnd == -1 {
-		return src
-	}
-	insertPos := pkgIdx + lineEnd + 1
-
-	importStmt := "\nimport \"neurogo/pkg/runtime\"\n"
-	return src[:insertPos] + importStmt + src[insertPos:]
+	packagePattern := regexp.MustCompile(`package\s+[a-zA-Z0-9_]+`)
+	return packagePattern.ReplaceAllString(code, "$0\n\nimport \"neurogo/pkg/runtime\"")
 }
