@@ -4,9 +4,9 @@ import (
 	"fmt"
 )
 
-train "intent_model.gow" {
+train "examples/intent/intent_model.gow" {
 	format: "csv",
-	source: "dataset.csv",
+	source: "examples/intent/dataset.csv",
 	input:  "text",
 	target: "label",
 	epochs: 40,
