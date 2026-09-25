@@ -13,28 +13,30 @@ train "intent_model.gow" {
 }
 
 func handleQuery(query string) {
-	fmt.Printf("\n[User Input] %s\n", query)
+	fmt.Printf("
+[User Input] %s
+", query)
 
 	match query using "intent_model.gow" {
 	case "Refund" score >= 0.70:
-		fmt.Println(">> [Routing] 환불/결제취소 전문 상담사로 연결합니다.")
+		fmt.Println(">> [Routing] Connecting to Refund & Billing Specialist...")
 	case "Delivery" score >= 0.70:
-		fmt.Println(">> [Routing] 실시간 배송 추적 시스템을 실행합니다.")
+		fmt.Println(">> [Routing] Launching Real-time Shipment Tracking...")
 	case "Inquiry" score >= 0.70:
-		fmt.Println(">> [Routing] 상품 상세 FAQ 및 Q&A 봇으로 안내합니다.")
+		fmt.Println(">> [Routing] Directing to Product FAQ & Support Bot...")
 	default:
-		fmt.Println(">> [Routing] 명확하지 않은 문의입니다. 기본 고객센터로 연결합니다.")
+		fmt.Println(">> [Routing] Low confidence query. Routing to General Helpdesk.")
 	}
 }
 
 func main() {
-	fmt.Println("=== NeuroGo 지능형 분기 데모 실행 ===")
+	fmt.Println("=== NeuroGo Intelligent Branching Demo ===")
 
 	testQueries := []string{
-		"주문 결제한 거 환불해주세요",
-		"송장번호 배송 조회 좀 해주세요",
-		"이거 사이즈 재고 있나요?",
-		"오늘 점심 뭐 먹지?",
+		"Please cancel my order and issue a full refund",
+		"Where is my package? Track shipment please",
+		"Do you have this jacket in size medium?",
+		"What should I have for lunch today?",
 	}
 
 	for _, q := range testQueries {

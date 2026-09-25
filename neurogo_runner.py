@@ -115,7 +115,7 @@ def train_model(cfg, base_dir="."):
     B = [0.0 for _ in range(num_classes)]
     
     lr = 0.2
-    epochs = cfg.get("epochs", 50)
+    epochs = cfg.get("epochs", 40)
     for ep in range(1, epochs + 1):
         random.shuffle(samples)
         total_loss = 0.0
@@ -206,7 +206,7 @@ def load_and_infer(weight_path, text):
     }
 
 if __name__ == "__main__":
-    example_dir = "/working_dir/c_b5c449c5c377d857/neurogo/examples/intent"
+    example_dir = os.path.join(os.path.dirname(__file__), "examples/intent")
     ngo_path = os.path.join(example_dir, "main.ngo")
     go_path = os.path.join(example_dir, "main.go")
     
@@ -226,10 +226,10 @@ if __name__ == "__main__":
     weight_file = os.path.join(example_dir, configs[0]["weight_path"])
     
     test_queries = [
-        "주문 결제한 거 환불해주세요",
-        "송장번호 배송 조회 좀 해주세요",
-        "이거 사이즈 재고 있나요?",
-        "오늘 점심 뭐 먹지?"
+        "Please cancel my order and issue a full refund",
+        "Where is my package? Track shipment please",
+        "Do you have this jacket in size medium?",
+        "What should I have for lunch today?"
     ]
     
     for q in test_queries:
@@ -241,10 +241,10 @@ if __name__ == "__main__":
         score = res['score']
         label = res['label']
         if label == "Refund" and score >= 0.70:
-            print("   >> [Branch Taken] case \"Refund\" score >= 0.70: 환불/결제취소 전문 상담사로 연결합니다.")
+            print("   >> [Branch Taken] case \"Refund\" score >= 0.70: Connecting to Refund & Billing Specialist...")
         elif label == "Delivery" and score >= 0.70:
-            print("   >> [Branch Taken] case \"Delivery\" score >= 0.70: 실시간 배송 추적 시스템을 실행합니다.")
+            print("   >> [Branch Taken] case \"Delivery\" score >= 0.70: Launching Real-time Shipment Tracking...")
         elif label == "Inquiry" and score >= 0.70:
-            print("   >> [Branch Taken] case \"Inquiry\" score >= 0.70: 상품 상세 FAQ 및 Q&A 봇으로 안내합니다.")
+            print("   >> [Branch Taken] case \"Inquiry\" score >= 0.70: Directing to Product FAQ & Support Bot...")
         else:
-            print("   >> [Branch Taken] default: 명확하지 않은 문의입니다. 기본 고객센터로 연결합니다.")
+            print("   >> [Branch Taken] default: Low confidence query. Routing to General Helpdesk.")
