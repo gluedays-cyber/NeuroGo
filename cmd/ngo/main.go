@@ -23,7 +23,7 @@ func printUsage() {
 }
 
 // loadAndTranspile: 공통 파일 로딩, 트랜스파일, 경로 보정 수행
-func loadAndTranspile(ngoPath string) (string, []trainer.TrainConfig, error) {
+func loadAndTranspile(ngoPath string) (string, []transpiler.TrainConfig, error) {
 	absNgoPath, err := filepath.Abs(ngoPath)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to resolve absolute path for '%s': %w", ngoPath, err)
@@ -54,7 +54,7 @@ func loadAndTranspile(ngoPath string) (string, []trainer.TrainConfig, error) {
 }
 
 // executeTraining: 보정된 설정값 기반으로 모델 학습 실행
-func executeTraining(configs []trainer.TrainConfig) error {
+func executeTraining(configs []transpiler.TrainConfig) error {
 	for _, cfg := range configs {
 		if err := trainer.TrainFromConfig(cfg); err != nil {
 			return fmt.Errorf("training error for '%s': %w", cfg.WeightPath, err)
