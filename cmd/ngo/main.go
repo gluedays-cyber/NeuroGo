@@ -8,59 +8,35 @@ import (
 	"path/filepath"
 	"strings"
 
-	"neurogo/pkg/trainer"
 	"neurogo/pkg/transpiler"
 )
 
 func printUsage() {
 	fmt.Println("NeuroGo (ngo) - Intelligent Control Flow Language Toolchain")
 	fmt.Println("\nUsage:")
-	fmt.Println("  ngo train <file.ngo>               Train models defined in train blocks and generate .gow files")
 	fmt.Println("  ngo transpile <file.ngo> [-o out]  Transpile .ngo file to standard Go (.go)")
 	fmt.Println("  ngo run <file.ngo>                 Transpile and execute with 'go run'")
 	fmt.Println("  ngo build <file.ngo> [-o binary]   Transpile and compile with 'go build'")
 	fmt.Println("  ngo help                           Show this help message")
 }
 
-// loadAndTranspile: 공통 파일 로딩, 트랜스파일, 경로 보정 수행
-func loadAndTranspile(ngoPath string) (string, []transpiler.TrainConfig, error) {
+func loadAndTranspile(ngoPath string) (string, error) {
 	absNgoPath, err := filepath.Abs(ngoPath)
 	if err != nil {
-		return "", nil, fmt.Errorf("failed to resolve absolute path for '%s': %w", ngoPath, err)
+		return "", fmt.Errorf("failed to resolve absolute path for '%s': %w", ngoPath, err)
 	}
 
 	content, err := os.ReadFile(absNgoPath)
 	if err != nil {
-		return "", nil, fmt.Errorf("failed to read file '%s': %w", absNgoPath, err)
+		return "", fmt.Errorf("failed to read file '%s': %w", absNgoPath, err)
 	}
 
-	goCode, configs, err := transpiler.Transpile(string(content))
+	goCode, _, err := transpiler.Transpile(string(content))
 	if err != nil {
-		return "", nil, fmt.Errorf("transpilation failed: %w", err)
+		return "", fmt.Errorf("transpilation failed: %w", err)
 	}
 
-	// .ngo 파일이 위치한 디렉터리를 기준으로 상대 경로 보정
-	baseDir := filepath.Dir(absNgoPath)
-	for i := range configs {
-		if !filepath.IsAbs(configs[i].Source) {
-			configs[i].Source = filepath.Join(baseDir, configs[i].Source)
-		}
-		if !filepath.IsAbs(configs[i].WeightPath) {
-			configs[i].WeightPath = filepath.Join(baseDir, configs[i].WeightPath)
-		}
-	}
-
-	return goCode, configs, nil
-}
-
-// executeTraining: 보정된 설정값 기반으로 모델 학습 실행
-func executeTraining(configs []transpiler.TrainConfig) error {
-	for _, cfg := range configs {
-		if err := trainer.TrainFromConfig(cfg); err != nil {
-			return fmt.Errorf("training error for '%s': %w", cfg.WeightPath, err)
-		}
-	}
-	return nil
+	return goCode, nil
 }
 
 func main() {
@@ -85,7 +61,7 @@ func main() {
 		outFile := outFlag.String("o", "", "Output .go file path")
 		outFlag.Parse(os.Args[3:])
 
-		goCode, _, err := loadAndTranspile(ngoFile)
+		goCode, err := loadAndTranspile(ngoFile)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -102,29 +78,6 @@ func main() {
 		}
 		fmt.Printf("[NeuroGo] Successfully transpiled '%s' -> '%s'\n", ngoFile, target)
 
-	case "train":
-		if len(os.Args) < 3 {
-			fmt.Println("Error: please specify a .ngo file to train")
-			os.Exit(1)
-		}
-		ngoFile := os.Args[2]
-
-		_, configs, err := loadAndTranspile(ngoFile)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		if len(configs) == 0 {
-			fmt.Println("[NeuroGo] No 'train' blocks found in file.")
-			return
-		}
-
-		if err := executeTraining(configs); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
 	case "run":
 		if len(os.Args) < 3 {
 			fmt.Println("Error: please specify a .ngo file to run")
@@ -132,24 +85,12 @@ func main() {
 		}
 		ngoFile := os.Args[2]
 
-		goCode, configs, err := loadAndTranspile(ngoFile)
+		goCode, err := loadAndTranspile(ngoFile)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		// 가중치 파일 미존재 시 자동 학습 수행
-		for _, cfg := range configs {
-			if _, err := os.Stat(cfg.WeightPath); os.IsNotExist(err) {
-				fmt.Printf("[NeuroGo] Weight file '%s' not found. Auto-training...\n", cfg.WeightPath)
-				if err := trainer.TrainFromConfig(cfg); err != nil {
-					fmt.Printf("Auto-training failed: %v\n", err)
-					os.Exit(1)
-				}
-			}
-		}
-
-		// 트랜스파일 파일 생성
 		targetGo := strings.TrimSuffix(ngoFile, filepath.Ext(ngoFile)) + ".go"
 		if err := os.WriteFile(targetGo, []byte(goCode), 0644); err != nil {
 			fmt.Printf("Error writing generated Go file: %v\n", err)
@@ -157,11 +98,10 @@ func main() {
 		}
 
 		if _, err := exec.LookPath("go"); err != nil {
-			fmt.Printf("[NeuroGo] Transpiled to '%s'. ('go' binary not found in current PATH to execute directly)\n", targetGo)
+			fmt.Printf("[NeuroGo] Transpiled to '%s'. ('go' binary not found in current PATH)\n", targetGo)
 			return
 		}
 
-		// 대상 파일이 위치한 디렉터리를 Working Directory로 설정하여 상대 경로 충돌 방지
 		absTargetGo, err := filepath.Abs(targetGo)
 		if err != nil {
 			fmt.Printf("Error resolving target path: %v\n", err)
@@ -187,7 +127,7 @@ func main() {
 		outFile := buildFlag.String("o", "", "Output binary file path")
 		buildFlag.Parse(os.Args[3:])
 
-		goCode, _, err := loadAndTranspile(ngoFile)
+		goCode, err := loadAndTranspile(ngoFile)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -200,7 +140,7 @@ func main() {
 		}
 
 		if _, err := exec.LookPath("go"); err != nil {
-			fmt.Printf("[NeuroGo] Transpiled to '%s'. ('go' binary not found in current PATH to build directly)\n", targetGo)
+			fmt.Printf("[NeuroGo] Transpiled to '%s'. ('go' binary not found in current PATH)\n", targetGo)
 			return
 		}
 
