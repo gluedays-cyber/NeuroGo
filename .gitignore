@@ -1,0 +1,19 @@
+# Binaries
+ngo
+app
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Compiled object files
+*.o
+*.a
+
+# Python
+__pycache__/
+*.pyc
+
+# OS generated
+.DS_Store
+Thumbs.db
