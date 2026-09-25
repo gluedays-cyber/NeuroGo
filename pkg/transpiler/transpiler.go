@@ -6,6 +6,16 @@ import (
 	"strings"
 )
 
+// TrainConfig holds training configuration extracted from .ngo source files.
+type TrainConfig struct {
+	WeightPath string
+	Source     string
+	Input      string
+	Target     string
+	Epochs     int
+	Format     string
+}
+
 // Regex patterns for NeuroGo syntax
 var (
 	// Matches: match <target> using "<modelPath>" {
