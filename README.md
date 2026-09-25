@@ -145,7 +145,7 @@ Run the trainer on the example NeuroGo program:
 
 ```bash
 # Using installed tool (Recommended)
-ngo train examples/intent/main.ngo
+ngotrain -data examples/intent/dataset.csv -out examples/intent/intent_model.gow -epochs 40
 
 # Or using local binary:
 # On Windows:      .\ngo.exe train examples/intent/main.ngo
