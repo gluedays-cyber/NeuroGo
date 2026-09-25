@@ -1,19 +1,322 @@
 text,label
-"I would like to request a refund",Refund
-"Cancel my order and refund my money please",Refund
-"When will my refund be processed?",Refund
-"Order cancellation and refund request",Refund
-"Please process a refund for my return",Refund
-"I want to cancel this payment",Refund
-"When will my package arrive?",Delivery
-"I want to track my shipment location",Delivery
-"Please check the delivery status",Delivery
-"Can I get the tracking number?",Delivery
-"What is the current delivery status?",Delivery
-"Has my order shipped yet?",Delivery
-"Is this product currently in stock?",Inquiry
-"Can I change the color of this item?",Inquiry
-"I have a question about the sizing",Inquiry
-"Where can I find the product specifications?",Inquiry
-"Are there any discount coupons available?",Inquiry
-"How do I use this item?",Inquiry
+i want a refund,Refund
+please issue a full refund,Refund
+cancel my order immediately,Refund
+i need my money back,Refund
+give me a refund right now,Refund
+how can i get a refund,Refund
+i want to return this product,Refund
+can i return this item for money back,Refund
+refund my payment please,Refund
+return policy refund request,Refund
+cancel order and refund money,Refund
+money back guarantee claim,Refund
+chargeback this purchase,Refund
+i was charged twice refund please,Refund
+unauthorized charge need refund,Refund
+accidental purchase refund me,Refund
+wrong item sent refund money,Refund
+damaged item want money back,Refund
+broken product refund request,Refund
+cancel subscription and refund,Refund
+hey cncel my purchase right now and give my money back,Refund
+cancel my purchase,Refund
+give my money back,Refund
+issue refund to my credit card,Refund
+refund my paypal account,Refund
+i sent it back where is my refund,Refund
+return received when do i get refund,Refund
+requesting full reimbursement,Refund
+please reimburse my payment,Refund
+order cancellation and refund,Refund
+i changed my mind refund please,Refund
+item not as described money back,Refund
+poor quality want refund,Refund
+defective product money return,Refund
+i demand a refund immediately,Refund
+can you cancel this transaction,Refund
+abort order and return funds,Refund
+please refund the shipping cost,Refund
+overcharged on my order refund,Refund
+billing error please refund,Refund
+cancel this order today,Refund
+stop shipment and refund me,Refund
+i do not want this anymore refund,Refund
+return label for refund,Refund
+send my money back immediately,Refund
+revoke payment and refund,Refund
+unhappy with service refund please,Refund
+cancel order before shipping refund,Refund
+how long does refund take,Refund
+refund status update request,Refund
+did you process my refund yet,Refund
+refund not showing in bank,Refund
+where is my reimbursement,Refund
+reversal of charges please,Refund
+i want compensation and refund,Refund
+cancel my contract and refund,Refund
+refund for missing items,Refund
+item arrived late want refund,Refund
+counterfeit item money back,Refund
+fraudulent transaction refund,Refund
+drop this order and refund,Refund
+refund to original payment method,Refund
+credit balance refund request,Refund
+mistake in billing refund needed,Refund
+double billed please refund,Refund
+cancel order #12345 refund,Refund
+void transaction and return cash,Refund
+i refuse delivery give refund,Refund
+pack returned refund my cash,Refund
+money return request form,Refund
+please approve my return refund,Refund
+give me back my cash,Refund
+i am entitled to a refund,Refund
+refund procedure inquiry,Refund
+failed delivery want refund,Refund
+never received item refund me,Refund
+scam product refund now,Refund
+terrible quality money back,Refund
+cancel purchase order refund,Refund
+return package for full refund,Refund
+send refund confirmation,Refund
+credit card refund not received,Refund
+reimburse transaction fees,Refund
+cancel pre-order and refund,Refund
+i want a cash refund not credit,Refund
+can i get refunded today,Refund
+undo purchase and refund,Refund
+terminate membership and refund,Refund
+service outage refund request,Refund
+defective goods return refund,Refund
+damaged parcel refund claim,Refund
+refund processing time too long,Refund
+return my funds immediately,Refund
+cancel recurring charge refund,Refund
+payment reversal request,Refund
+give refund as store credit,Refund
+refund request for broken item,Refund
+i will sue if not refunded,Refund
+full refund needed urgently,Refund
+where is my package,Delivery
+track shipment please,Delivery
+when will my order arrive,Delivery
+where is my order,Delivery
+package tracking number please,Delivery
+track my delivery status,Delivery
+shipping delay update,Delivery
+is my package shipped yet,Delivery
+estimated delivery date inquiry,Delivery
+courier tracking link not working,Delivery
+package marked delivered but not received,Delivery
+where is the courier right now,Delivery
+still waiting for my item when is the courier arriving,Delivery
+delivery took too long where is it,Delivery
+driver location for my package,Delivery
+dispatch status of my order,Delivery
+tracking says delivered where is it,Delivery
+delayed package tracking,Delivery
+has my parcel been dispatched,Delivery
+customs clearance delay shipment,Delivery
+international shipping tracking update,Delivery
+package stuck in transit,Delivery
+who is delivering my package,Delivery
+courier contact number request,Delivery
+change delivery address for shipment,Delivery
+reroute my package to another address,Delivery
+hold package at pickup point,Delivery
+reschedule delivery date,Delivery
+missed delivery notice what to do,Delivery
+leave package at front door please,Delivery
+deliver parcel to neighbor,Delivery
+signature required for delivery,Delivery
+postal service tracking issue,Delivery
+freight status check,Delivery
+express shipping delivery time,Delivery
+next day delivery tracking,Delivery
+standard shipping estimated arrival,Delivery
+package lost in transit,Delivery
+tracking shows exception error,Delivery
+arrived at sorting facility when delivery,Delivery
+out for delivery status inquiry,Delivery
+did the courier attempt delivery,Delivery
+package delayed due to weather,Delivery
+order in transit update,Delivery
+where is my parcel right now,Delivery
+can i track driver live,Delivery
+delivery window for today,Delivery
+delivery time estimate,Delivery
+why is shipment delayed,Delivery
+track package with order number,Delivery
+air cargo tracking status,Delivery
+ground shipment arrival date,Delivery
+courier left notice on door,Delivery
+safe drop instructions for package,Delivery
+package delivered to wrong address,Delivery
+stolen package investigation,Delivery
+package missing from porch,Delivery
+shipping confirmation email missing,Delivery
+tracking code invalid,Delivery
+when does courier deliver today,Delivery
+weekend delivery options,Delivery
+delivery status pending update,Delivery
+in transit for three weeks,Delivery
+customs hold on my package,Delivery
+import duty payment for delivery,Delivery
+release held shipment,Delivery
+cargo arrival notice,Delivery
+delivery driver phone number,Delivery
+parcel tracking barcode scan,Delivery
+can i pick up from depot,Delivery
+local distribution center location,Delivery
+shipment en route meaning,Delivery
+package dispatched from warehouse,Delivery
+flight delay shipment impact,Delivery
+order fulfillment and shipping progress,Delivery
+delivery truck breakdown delay,Delivery
+confirm receipt of shipment,Delivery
+proof of delivery signature,Delivery
+photograph proof of delivery,Delivery
+lost package claim filing,Delivery
+trace my consignment,Delivery
+shipping carrier assignment,Delivery
+track pallet delivery,Delivery
+freight forwarding status,Delivery
+express mail delivery progress,Delivery
+priority shipping tracking code,Delivery
+overnight shipment arrival time,Delivery
+last mile carrier tracking,Delivery
+doorstep delivery instructions,Delivery
+gate code for delivery driver,Delivery
+apartment buzzer for package drop,Delivery
+parcel locker delivery code,Delivery
+mailbox delivery confirmation,Delivery
+deliver before 5 pm please,Delivery
+tracking not updating for days,Delivery
+is delivery on schedule,Delivery
+expected delivery timeframe,Delivery
+tracking info says pending pickup,Delivery
+package arrived at local hub,Delivery
+do you have this jacket in size medium,Inquiry
+is this item in stock,Inquiry
+product availability question,Inquiry
+what sizes are available,Inquiry
+do you restock sold out items,Inquiry
+is the black hoodie currently in stock in small,Inquiry
+what colors does this come in,Inquiry
+size chart measurements guide,Inquiry
+does this fit true to size,Inquiry
+material composition of this shirt,Inquiry
+is this 100 percent cotton,Inquiry
+is this product waterproof,Inquiry
+battery life specifications,Inquiry
+dimensions and weight of item,Inquiry
+product warranty period details,Inquiry
+how does this device work,Inquiry
+is this compatible with mac,Inquiry
+does this support bluetooth 5.0,Inquiry
+what accessories are included in box,Inquiry
+user manual download link,Inquiry
+care and washing instructions,Inquiry
+shelf life and expiration date,Inquiry
+is this suitable for children,Inquiry
+allergen information for food product,Inquiry
+vegan certified product inquiry,Inquiry
+is this authentic or replica,Inquiry
+bulk pricing discount options,Inquiry
+wholesale inquiry for businesses,Inquiry
+do you offer student discounts,Inquiry
+gift card purchase and balance check,Inquiry
+coupon code not working at checkout,Inquiry
+promo code terms and conditions,Inquiry
+payment methods accepted,Inquiry
+do you take apple pay or google pay,Inquiry
+installments payment options,Inquiry
+sales tax included in price,Inquiry
+store locations and opening hours,Inquiry
+nearest retail branch to my zip code,Inquiry
+parking availability at store,Inquiry
+curbside pickup availability,Inquiry
+try before you buy policy,Inquiry
+price matching policy with competitors,Inquiry
+pre order release date question,Inquiry
+technical specifications sheet,Inquiry
+system requirements for software,Inquiry
+upgrade options available,Inquiry
+replacement parts catalog,Inquiry
+customer support operating hours,Inquiry
+contact sales representative,Inquiry
+book a product demonstration,Inquiry
+recycling program for old electronics,Inquiry
+trade in program value estimate,Inquiry
+is this safe to use daily,Inquiry
+side effects and safety warnings,Inquiry
+country of manufacture origin,Inquiry
+eco friendly packaging inquiry,Inquiry
+limited edition restock date,Inquiry
+membership reward points balance,Inquiry
+how to earn loyalty points,Inquiry
+redeem discount voucher,Inquiry
+custom engraving or embossing service,Inquiry
+gift wrapping options available,Inquiry
+include personal message in parcel,Inquiry
+assembly required for furniture,Inquiry
+installation service cost,Inquiry
+energy efficiency rating,Inquiry
+voltage compatibility 110v or 220v,Inquiry
+screen resolution and refresh rate,Inquiry
+storage capacity expandable,Inquiry
+camera megapixel specs,Inquiry
+water resistance rating ipx8,Inquiry
+leather quality real or faux,Inquiry
+fabric stretchiness and durability,Inquiry
+shoes running or walking purpose,Inquiry
+treadmill maximum user weight,Inquiry
+recipe recommendations for product,Inquiry
+nutritional facts table,Inquiry
+organic ingredients percentage,Inquiry
+cruelty free product certification,Inquiry
+fragrance free option available,Inquiry
+hypoallergenic material inquiry,Inquiry
+license key activation help,Inquiry
+account password reset guide,Inquiry
+change email address on profile,Inquiry
+privacy policy and data collection,Inquiry
+terms of service agreement,Inquiry
+press and media contact,Inquiry
+career opportunities and hiring,Inquiry
+investor relations contact,Inquiry
+feedback and suggestion box,Inquiry
+business collaboration proposal,Inquiry
+vendor registration process,Inquiry
+affiliate marketing program,Inquiry
+sponsorship request contact,Inquiry
+general inquiries contact department,Inquiry
+speak to a human representative,Inquiry
+can you recommend a good movie to watch tonight,Other
+what is the weather like today,Other
+tell me a funny joke,Other
+how do i bake a chocolate cake,Other
+who was the first president,Other
+what is the capital of france,Other
+play some jazz music,Other
+what time is it right now,Other
+do you like artificial intelligence,Other
+recommend a book to read,Other
+how to solve quadratic equations,Other
+write a poem about winter,Other
+who won the world cup,Other
+what should i eat for dinner,Other
+translate this to spanish,Other
+i got charged twice for my subscription,Refund
+duplicate charge on my credit card statement,Refund
+the billing statement shows an incorrect deduction,Refund
+wrong amount deducted from my account,Refund
+why was i billed twice this month,Refund
+charged for an item i did not buy,Refund
+what are the exact dimensions of this product,Inquiry
+can you give me the size and measurements of the desk,Inquiry
+where can i download the latest user manual,Inquiry
+looking for firmware update instructions and guide,Inquiry
+specifications and technical details for this item,Inquiry
+how big is this item and what are the dimensions,Inquiry
