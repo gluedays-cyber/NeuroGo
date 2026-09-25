@@ -54,9 +54,9 @@ default:
 
 ```
 [ .ngo Source Code ] ────▶ [ ngo Transpiler ] ────▶ [ Standard .go Code ]
-        │                                                    │
-   (train block)                                        (go run / build)
-        ▼                                                    ▼
+        │                                                   │
+   (train block)                                       (go run / build)
+        ▼                                                   ▼
 [ Training Pipeline ] ───▶ [ .gow Binary Archive ] ─▶ [ Pure Go Runtime ]
   (Vocab + SGD Trainer)      (Header + Weights)         (Forward Pass / Softmax)
 ```
@@ -96,7 +96,29 @@ NeuroGo/                       <-- Run all commands from this root folder
 ## Step-by-Step Quickstart Guide
 
 ### Prerequisites
-- **Go 1.20+** installed on your system. Verify by running `go version` in your terminal.
+- **Git** installed on your system. Verify by running:
+  ```bash
+  git --version
+  ```
+  If not installed, download and install it from [git-scm.com](https://git-scm.com/).
+- **Go 1.20+** installed on your system. Verify by running:
+  ```bash
+  go version
+  ```
+  If not installed, download and install it from [go.dev](https://go.dev/).
+
+---
+
+### Step 0: Clone the Repository and Navigate to the Directory
+
+Clone the repository to your local machine and move into the project root directory:
+
+```bash
+git clone https://github.com/gluedays-cyber/NeuroGo.git
+cd NeuroGo
+```
+
+All subsequent commands must be executed from this root directory.
 
 ---
 
