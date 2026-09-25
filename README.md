@@ -1,8 +1,8 @@
 # NeuroGo (`.ngo`)
 
-**NeuroGo** is an AI-augmented dialect and superset of the Go programming language designed for **Learned Control Flow** and **Intelligent Branching**.
+**Beyond `if`/`switch`: An AI-augmented dialect of Go powered by `train`, `match`, and `score`.**
 
-Traditional programming languages rely strictly on deterministic branching (`if-else`, `switch-case`). NeuroGo extends Go syntax with native first-class primitives—`train`, `match`, and `score`—allowing developers to train neural network weights directly from datasets and route program execution using probabilistic confidence scores.
+Traditional programming languages rely strictly on deterministic branching (`if-else`, `switch-case`). **NeuroGo** extends Go syntax with native first-class primitives—`train`, `match`, and `score`—allowing developers to train neural network weights directly from datasets and route program execution using probabilistic confidence scores.
 
 ---
 
@@ -12,7 +12,7 @@ Traditional programming languages rely strictly on deterministic branching (`if-
 - **Offline Training Declaration (`train`)**: Declare dataset sources and training parameters directly inside your code, compiled into standalone `.gow` (Go Weight) archives.
 - **Pure Go Inference Engine**: Zero external C/C++ dependencies (`CGO_ENABLED=0` friendly). Easily cross-compiles to a single static binary.
 - **100% Go Interoperability**: NeuroGo transpiles directly into clean, idiomatic Go code. Seamlessly import and use any standard library or third-party Go package (`net/http`, `sync`, etc.).
-- **Subword & Morphology Aware**: Built-in 2-gram / subword vectorization handles complex agglutinative languages (e.g., Korean, Japanese) as well as European languages out of the box.
+- **Subword & Morphology Aware**: Built-in 2-gram / subword vectorization handles complex morphology and typos out of the box.
 - **Thread-Safe & Lock-Free**: In-memory immutable weight caches with zero-allocation buffers for massive Goroutine concurrency.
 
 ---
@@ -20,7 +20,7 @@ Traditional programming languages rely strictly on deterministic branching (`if-
 ## Language Syntax Specification
 
 ### 1. `train` Block
-Declares training parameters to construct a `.gow` model file prior to execution:
+Declares dataset sources and training parameters to construct a `.gow` model file:
 
 ```go
 train "intent_model.gow" {
@@ -61,31 +61,16 @@ default:
   (Vocab + SGD Trainer)      (Header + Weights)         (Forward Pass / Softmax)
 ```
 
-### Generated Go Code Example
-The transpiler cleanly rewrites `match` blocks into standard Go:
-
-```go
-{
-    _ngoMatch := runtime.Match("intent_model.gow", query)
-    switch {
-    case _ngoMatch.Label == "Refund" && _ngoMatch.Score >= 0.70:
-        routeToRefundAgent(query)
-    case _ngoMatch.Label == "Delivery" && _ngoMatch.Score >= 0.70:
-        trackShipment(query)
-    default:
-        fallbackSupport(query)
-    }
-}
-```
-
 ---
 
 ## Project Structure
 
+> **Working Directory Rule**: Always run terminal commands from the **root directory** of this repository (`NeuroGo/`).
+
 ```text
-neurogo/
+NeuroGo/                       <-- Run all commands from this root folder
 ├── cmd/
-│   └── ngo/                   # 'ngo' CLI toolchain entry point
+│   └── ngo/                   # 'ngo' CLI compiler source code
 │       └── main.go
 ├── pkg/
 │   ├── runtime/               # Model loading, tokenizer, and forward pass engine
@@ -95,8 +80,8 @@ neurogo/
 │   └── trainer/               # CSV dataset parser, vocab builder, and SGD optimizer
 │       └── trainer.go
 ├── examples/
-│   └── intent/                # End-to-end customer intent routing demo
-│       ├── dataset.csv        # Training samples
+│   └── intent/                # Customer intent routing example
+│       ├── dataset.csv        # English training samples
 │       ├── main.ngo           # NeuroGo source file
 │       ├── intent_model.gow   # Pre-trained weight artifact
 │       └── main.go            # Transpiled Go file
@@ -108,79 +93,151 @@ neurogo/
 
 ---
 
-## Getting Started
+## Step-by-Step Quickstart Guide
 
 ### Prerequisites
-- **Go 1.20+** installed on your system.
-
-### Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/gluedays-cyber/neurogo.git
-   cd neurogo
-   ```
-
-2. Build the `ngo` CLI compiler:
-   ```bash
-   go build -o ngo ./cmd/ngo
-   ```
-   *(Optional)* Move `ngo` to your system PATH:
-   ```bash
-   sudo mv ngo /usr/local/bin/
-   ```
+- **Go 1.20+** installed on your system. Verify by running `go version` in your terminal.
 
 ---
 
-## Usage Guide
+### Step 1: Install the `ngo` Compiler Tool (First Time Only)
 
-### Step 1: Train the Model
-Extract training declarations from your `.ngo` file and generate the `.gow` binary:
+From the root directory of the repository, install the `ngo` command:
+
 ```bash
-./ngo train examples/intent/main.ngo
+go install ./cmd/ngo
 ```
-Output:
+
+**Why `go install`?**
+- It automatically handles platform executable formats (`ngo.exe` on Windows, `ngo` on macOS/Linux).
+- It installs the binary to your Go bin directory (`~/go/bin` or `%GOPATH%\bin`), allowing you to run `ngo` from **any directory** without worrying about `.\`, `./`, or `.exe` extension issues.
+
+*(Alternative: If you prefer building locally in the current folder, run `go build ./cmd/ngo` without `-o`. On Windows this creates `ngo.exe`; on macOS/Linux it creates `ngo`.)*
+
+---
+
+### Step 2: Train the AI Model (`train`)
+
+Run the trainer on the example NeuroGo program:
+
+```bash
+# Using installed tool (Recommended)
+ngo train examples/intent/main.ngo
+
+# Or using local binary:
+# On Windows:      .\ngo.exe train examples/intent/main.ngo
+# On macOS/Linux:  ./ngo train examples/intent/main.ngo
+```
+
+**What happens?**
+The tool parses the `train` block in `main.ngo`, reads `dataset.csv`, trains a classification model using SGD cross-entropy optimization, and saves the binary weights to `examples/intent/intent_model.gow`.
+
+**Expected Output:**
 ```text
-[NeuroGo Trainer] Starting training for 'intent_model.gow' from 'dataset.csv'...
-[NeuroGo Trainer] Dataset parsed: 18 samples, 96 unique tokens, 3 classes: [Delivery Inquiry Refund]
-   Epoch [ 10/ 40] - Loss: 0.0197
-   Epoch [ 20/ 40] - Loss: 0.0100
-   Epoch [ 30/ 40] - Loss: 0.0067
-   Epoch [ 40/ 40] - Loss: 0.0051
-[NeuroGo Trainer] Successfully saved model to 'intent_model.gow'!
-```
-
-### Step 2: Run Directly
-Transpile and execute the code immediately:
-```bash
-./ngo run examples/intent/main.ngo
-```
-
-### Step 3: Inspect Transpiled Go Code
-If you want to view the generated Go code:
-```bash
-./ngo transpile examples/intent/main.ngo -o examples/intent/main.go
-```
-
-### Step 4: Build a Native Binary
-Compile into a standalone executable:
-```bash
-./ngo build examples/intent/main.ngo
-go build -o myapp examples/intent/main.go
-./myapp
+[NeuroGo Trainer] Starting training for 'examples/intent/intent_model.gow' from 'examples/intent/dataset.csv'...
+[NeuroGo Trainer] Dataset parsed: 18 samples, 195 unique tokens, 3 classes: [Delivery Inquiry Refund]
+   Epoch [ 10/ 40] - Loss: 0.0050
+   Epoch [ 20/ 40] - Loss: 0.0032
+   Epoch [ 30/ 40] - Loss: 0.0024
+   Epoch [ 40/ 40] - Loss: 0.0019
+[NeuroGo Trainer] Successfully saved model to 'examples/intent/intent_model.gow'!
 ```
 
 ---
 
-## Verification & Standalone Simulation
+### Step 3: Run Intelligent Branching (`run`)
 
-If you do not have Go installed yet and wish to test the language pipeline immediately, run the Python 3 reference simulator:
+Execute the program with real-time AI-based routing:
 
 ```bash
+# Using installed tool (Recommended)
+ngo run examples/intent/main.ngo
+
+# Or using local binary:
+# On Windows:      .\ngo.exe run examples/intent/main.ngo
+# On macOS/Linux:  ./ngo run examples/intent/main.ngo
+```
+
+**What happens?**
+1. Transpiles `main.ngo` into valid standard Go code (`main.go`).
+2. Evaluates the test queries against the trained weights using pure Go tensor operations.
+3. Dynamically branches to the matching `case` based on the predicted class and confidence score.
+
+**Expected Output:**
+```text
+=== NeuroGo Intelligent Branching Demo ===
+
+[User Input] Please cancel my order and issue a full refund
+>> [Routing] Connecting to Refund & Billing Specialist...
+
+[User Input] Where is my package? Track shipment please
+>> [Routing] Launching Real-time Shipment Tracking...
+
+[User Input] Do you have this jacket in size medium?
+>> [Routing] Directing to Product FAQ & Support Bot...
+
+[User Input] What should I have for lunch today?
+>> [Routing] Low confidence query. Routing to General Helpdesk.
+```
+
+Notice that the out-of-domain query (*"What should I have for lunch today?"*) fails to meet the 70% confidence threshold (`score >= 0.70`) and is safely routed to the `default` fallback branch.
+
+---
+
+### Step 4: Inspect Generated Standard Go Code
+
+To see how NeuroGo transforms `match` statements into idiomatic Go code without executing it:
+
+```bash
+ngo transpile examples/intent/main.ngo -o examples/intent/main.go
+```
+
+Open `examples/intent/main.go` to examine the transpiled `switch` block:
+
+```go
+{
+    _ngoMatch := runtime.Match("intent_model.gow", query)
+    switch {
+    case _ngoMatch.Label == "Refund" && _ngoMatch.Score >= 0.70:
+        fmt.Println(">> [Routing] Connecting to Refund & Billing Specialist...")
+    case _ngoMatch.Label == "Delivery" && _ngoMatch.Score >= 0.70:
+        fmt.Println(">> [Routing] Launching Real-time Shipment Tracking...")
+    case _ngoMatch.Label == "Inquiry" && _ngoMatch.Score >= 0.70:
+        fmt.Println(">> [Routing] Directing to Product FAQ & Support Bot...")
+    default:
+        fmt.Println(">> [Routing] Low confidence query. Routing to General Helpdesk.")
+    }
+}
+```
+
+---
+
+## Standalone Python Simulation (No Go Compiler Required)
+
+If you wish to test the entire pipeline without configuring a Go development environment, run the bundled reference simulator from the root directory:
+
+```bash
+# Windows
+python neurogo_runner.py
+
+# macOS / Linux
 python3 neurogo_runner.py
 ```
 
-This runs the exact same parser, SGD trainer, and inference engine to verify transpilation, training, and branching logic.
+This simulates the exact tokenizer, SGD training loop, and inference branching logic end-to-end.
+
+---
+
+## Frequently Asked Questions (FAQ)
+
+### 1. `ngo: command not found` or `'ngo' is not recognized`
+If you ran `go install ./cmd/ngo` but your terminal cannot find `ngo`, make sure your Go bin path is in your system's `PATH` environment variable:
+- **Windows**: Add `%USERPROFILE%\go\bin` to your `PATH`.
+- **macOS / Linux**: Add `export PATH=$PATH:$(go env GOPATH)/bin` to your `~/.bashrc` or `~/.zshrc`.
+- Alternatively, build locally in your project folder with `go build ./cmd/ngo` and run `.\ngo.exe` (Windows) or `./ngo` (macOS/Linux).
+
+### 2. Why avoid `go build -o ngo ./cmd/ngo` on Windows?
+On Windows, passing `-o ngo` forces the compiler to create an extensionless file named `ngo` instead of `ngo.exe`. Windows cannot execute binary files without the `.exe` extension. Running `go install ./cmd/ngo` or `go build ./cmd/ngo` (without `-o`) automatically generates the proper `.exe` extension on Windows.
 
 ---
 
