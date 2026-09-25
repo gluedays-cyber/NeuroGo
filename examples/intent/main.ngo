@@ -4,14 +4,6 @@ import (
 	"fmt"
 )
 
-train "intent_model.gow" {
-	format: "csv",
-	source: "dataset.csv",
-	input:  "text",
-	target: "label",
-	epochs: 40,
-}
-
 func handleQuery(query string) {
 	fmt.Printf("\n[User Input] %s\n", query)
 
