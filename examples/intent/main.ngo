@@ -13,11 +13,9 @@ train "examples/intent/intent_model.gow" {
 }
 
 func handleQuery(query string) {
-	fmt.Printf("
-[User Input] %s
-", query)
+	fmt.Printf("\n[User Input] %s\n", query)
 
-	match query using "intent_model.gow" {
+	match query using "examples/intent/intent_model.gow" {
 	case "Refund" score >= 0.70:
 		fmt.Println(">> [Routing] Connecting to Refund & Billing Specialist...")
 	case "Delivery" score >= 0.70:
