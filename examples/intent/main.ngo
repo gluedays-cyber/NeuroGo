@@ -4,15 +4,18 @@ import (
 	"fmt"
 )
 
+// Global confidence threshold
+const DefaultThreshold = 0.85
+
 func handleQuery(query string) {
 	fmt.Printf("\n[User Input] %s\n", query)
 
 	match query using "intent_model.gow" {
-	case "Refund" score >= 0.70:
+	case "Refund" score >= DefaultThreshold:
 		fmt.Println(">> [Routing] Connecting to Refund & Billing Specialist...")
-	case "Delivery" score >= 0.70:
+	case "Delivery" score >= DefaultThreshold:
 		fmt.Println(">> [Routing] Launching Real-time Shipment Tracking...")
-	case "Inquiry" score >= 0.70:
+	case "Inquiry" score >= DefaultThreshold:
 		fmt.Println(">> [Routing] Directing to Product FAQ & Support Bot...")
 	default:
 		fmt.Println(">> [Routing] Low confidence query. Routing to General Helpdesk.")
@@ -20,16 +23,50 @@ func handleQuery(query string) {
 }
 
 func main() {
-	fmt.Println("=== NeuroGo Intelligent Branching Demo ===")
+	fmt.Println("=== NeuroGo Intelligent Branching Demo (30 Queries Test) ===")
 
 	testQueries := []string{
-		"Please cancel my order and issue a full refund",
-		"Where is my package? Track shipment please",
-		"Do you have this jacket in size medium?",
-		"What should I have for lunch today?",
+		// 1-8: Refund & Billing
+		"hey cncel my purchase right now and give my money back",
+		"i got charged twice for my subscription this month",
+		"need a complete refund, the product arrived completely damaged",
+		"where can i request my payment reversal?",
+		"i want to cancel my order before it ships",
+		"the billing statement shows an incorrect deduction",
+		"can i get store credit instead of a bank refund?",
+		"cancel transaction and send money back to my paypal",
+
+		// 9-16: Shipping & Delivery
+		"still waiting for my item, when is the courier arriving?",
+		"tracking status says delivered but i did not receive anything",
+		"where is my package right now?",
+		"can i change the delivery destination address before tomorrow?",
+		"courier left no notification and package is delayed",
+		"what is the tracking number for order #49281?",
+		"express shipping is taking longer than promised",
+		"will the driver call me before delivery?",
+
+		// 17-24: Product Inquiry & Support
+		"is the black hoodie currently in stock in small?",
+		"what are the exact dimensions of the standing desk?",
+		"does this bluetooth speaker come with a 2-year warranty?",
+		"how do i reset the device back to factory settings?",
+		"do you offer bulk discounts for corporate orders?",
+		"is this compatible with macos sonoma?",
+		"where can i download the latest firmware user manual?",
+		"does the dress run true to size or should i size up?",
+
+		// 25-30: Out-of-Domain & Chitchat (Should route to default/Helpdesk)
+		"can you recommend a good movie to watch tonight?",
+		"what is the capital city of australia?",
+		"tell me a funny programming joke",
+		"how do i make authentic italian pizza dough?",
+		"who won the premier league match yesterday?",
+		"write a short python script to reverse a string",
 	}
 
-	for _, q := range testQueries {
+	for idx, q := range testQueries {
+		fmt.Printf("[%02d/30]", idx+1)
 		handleQuery(q)
 	}
 }
