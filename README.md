@@ -39,15 +39,19 @@ Rigid Heuristics ──────────────▶ [ NeuroGo: The Sw
 (Fast, Zero Tolerance)            (Sub-millisecond, Flexible, Pure Go)        (Slow, Expensive, Overkill)
 ```
 
-### Bridging the Gap
+### Breaking the Scaling Trap of Vanilla Go
 
-NeuroGo introduces a third paradigm: **lightweight, data-driven statistical branching**.
+In vanilla Go, conditional branching is bounded by human cognition and code maintainability. As edge cases proliferate into the thousands, legacy solutions break down:
 
-- **Flexibility without Bloat**: Maps inputs into a continuous semantic latent space rather than relying on discrete string matches, absorbing natural language variances without external dependencies.
-- **Microsecond In-Memory Execution**: Operates locally in pure Go (`CGO_ENABLED=0`) with kilobyte-scale weights, achieving sub-millisecond routing speeds on standard CPU cores.
-- **Threshold-Driven Rejection**: Incorporates confidence scores (`score >= 0.70`) directly into language primitives, offering a formal probabilistic fallback mechanism (`default`) when input certainty is low.
+| Capability | Vanilla Go (`if` / `switch`) | Rule Engines / Regex / Maps | NeuroGo (`match ... score`) |
+| :--- | :--- | :--- | :--- |
+| **Max Practical Conditions** | Dozens (cognitive limit) | Hundreds (spaghetti regex/trie) | **100,000+ (bounded only by dataset)** |
+| **Code Size Scaling** | $O(N)$ (grows per edge case) | $O(N)$ (massive pattern files) | **$O(1)$ (invariant 1-line case policy)** |
+| **Routing Latency** | $O(N)$ (sequential evaluation) | $O(N \cdot L)$ (backtracking risk) | **$O(1)$ ($\mu\text{s}$-level matrix operations)** |
+| **Typo & Noise Tolerance** | 0% (exact match only) | Extremely brittle | **Native (continuous latent space)** |
+| **Confidence Boundaries** | Binary (True / False only) | Requires custom scoring code | **Native (`score >= 0.70` primitives)** |
 
-By injecting bounded statistical flexibility into Go's strict control flow, NeuroGo delivers resilient semantic routing without the architectural baggage of modern deep learning stacks.
+NeuroGo introduces a third scope: **lightweight, data-driven statistical branching**. By delegating unstructured linguistic variances to compact weight hyperplanes, it delivers resilient semantic routing without the architectural baggage of modern deep learning stacks.
 
 ---
 
