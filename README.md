@@ -1,5 +1,9 @@
 # NeuroGo (`.ngo`)
 
+> **Why NeuroGo?**  
+> **Neuro** (Neural Network / Micro-Inference) + **Go** (Concurrency, Simplicity, & Pure Compilation).  
+> Bringing neural-level probabilistic intelligence natively into Go's strict, high-performance control flow.
+
 **Beyond `if`/`switch`: An AI-augmented dialect of Go powered by `match` and `score`.**
 
 Traditional programming languages rely strictly on deterministic branching (`if-else`, `switch-case`). **NeuroGo** extends Go syntax with native intelligent branching—`match` and `score`—allowing developers to route program execution using probabilistic confidence scores driven by offline pre-trained neural network weights.
