@@ -4,31 +4,31 @@
 
 Traditional programming languages rely strictly on deterministic branching (`if-else`, `switch-case`). **NeuroGo** extends Go syntax with native intelligent branching—`match` and `score`—allowing developers to route program execution using probabilistic confidence scores driven by offline pre-trained neural network weights.
 
-## NeuroGo: Instant AI Keywords for Massive Conditional Branching
-The three new keywords introduced to the Go language by NeuroGo—train, match, and score—enable developers to effortlessly create, modify, manage, and utilize artificial intelligence directly in code within a local environment, completely free from reliance on LLM APIs. 
+---
 
-Traditional approaches that call large language model APIs or load heavy local LLMs into memory to handle branching logic suffer from fatal drawbacks: hundreds of milliseconds of network latency, significant system overhead per request, compounding API costs proportional to traffic, and unpredictable control flow caused by hallucinations. In contrast, "Instant AI," created effortlessly on the fly via the single train command, severs these dependencies entirely. Without complex deep learning toolchains or Cgo dependencies, it produces pure weight files from a user-prepared dataset in just a few seconds. 
+## NeuroGo: Instant AI Primitives for Massive Conditional Branching
 
-Thanks to their compact footprint, these files load instantly into runtime memory. This grants developers total autonomy to create, manage, and operate intelligence locally—executing deterministic intelligent inference at microsecond ($\mu\text{s}$) speeds inside a single binary without external network calls or infrastructure costs. 
+NeuroGo introduces two native language primitives—**`match`** and **`score`**—alongside a dedicated offline training utility, **`ngotrain`**. Together, they empower developers to build, manage, and execute machine intelligence directly inside local Go codebases, completely free from external LLM API dependencies.
 
-Furthermore, because training takes mere seconds, whenever an edge-case defect appears in the branching logic, developers can immediately refine the dataset and re-run training, resolving the issue on the spot.
+### The Problem with Traditional Approaches
+* **API Overhead & Non-Determinism:** Calling external LLMs or embedding massive neural nets introduces hundreds of milliseconds of network latency, unpredictable recurring costs, and severe risk of hallucinations disrupting control flow.
+* **The Fragility of Deterministic Rules:** Standard `if` and `switch` statements break down as condition volume scales. An `if` block excels at a handful of boolean expressions; a `switch` handles dozens of discrete constants. But when software must process thousands of unstructured inputs (slang, typos, contextual phrasing), developers end up buried under brittle regex rules, overlapping dictionaries, and chaotic edge-case workarounds.
 
-The introduction of such Instant Intelligence fundamentally resolves the structural breakdown that legacy conditional branching faces as the "volume of conditions" scales up. An if statement excels at handling one to three absolute boolean criteria, but quickly degrades readability through nested logic as conditions multiply. 
-
-A switch statement is similarly constrained, capped at the dozens of fixed states (enums, integer codes) that a human developer can reasonably enumerate in their head. Even when resorting to regular expressions or hash maps, scaling conditions into the hundreds or thousands forces engineers to patch together countless patchwork rules to handle typos, spacing variations, and contextual nuances. 
-
-Ultimately, rule collisions, priority tangles, and catastrophic backtracking explode, sending the entire logic out of control.The new intelligent branching keywords, match and score, absorb this massive, complex branching logic within just a few lines of concise code. Within the source code, developers only need to declare clean policies based on threshold values, while delegating tens to hundreds of thousands of unstructured linguistic variations and exceptions into compressed mathematical hyperplanes within the weight space. 
-
-Even if the condition volume surges from ten thousand to one hundred thousand, the source code does not grow by a single line, and inference speed remains strictly constant through steady matrix operations rather than slowing down linearly with the number of conditions. Developers are completely liberated from the agony of hardcoding tens of thousands of edge cases, gaining the ability to govern hyper-scale conditional branching in the lightest, most robust manner possible simply by updating the dataset and retraining.
+### The NeuroGo Paradigm: Instant AI
+With NeuroGo, intelligent routing requires neither heavy deep learning toolchains nor Cgo dependencies:
+1. **Ultra-Fast Training:** Run the standalone `ngotrain` CLI to compile domain datasets into pure, compact binary weight files (`.gow`) in seconds.
+2. **Microsecond Latency:** These featherweight artifacts load directly into runtime memory, performing deterministic tensor inference at microsecond ($\mu\text{s}$) speeds inside a single static Go binary.
+3. **Constant-Time Control Flow:** Developers declare clean confidence threshold policies in code, delegating tens of thousands of edge cases to compressed hyperplanes within weight space. Even if variants scale from 10,000 to 100,000, source code does not grow by a single line, and execution time remains virtually invariant.
+4. **Instant Iteration:** When new edge cases arise, simply refine the dataset, re-run `ngotrain`, and redeploy without modifying application control flow.
 
 ---
 
 ## Motivation: The Missing Middle in Control Flow
 
-Modern software development is polarized between two extreme approaches to decision-making:
+Modern software development is polarized between two extremes of decision-making:
 
-1. **Deterministic Branching (`if`/`switch`)**: Extremely fast, predictable, and lightweight, but fundamentally brittle. Handling natural language or unstructured input requires thousands of heuristic rules, regex patterns, or string checks that fail on minor typos, morphological variations, or synonyms.
-2. **Heavyweight LLMs (Large Language Models)**: Highly flexible and semantically rich, but heavily over-engineered for simple control flow. LLMs introduce massive memory footprints (gigabytes of VRAM), network latency (hundreds of milliseconds), monetary API costs, and non-deterministic behavior.
+1. **Deterministic Branching (`if`/`switch`)**: Extremely fast, predictable, and lightweight, but fundamentally brittle against unstructured natural language variations.
+2. **Heavyweight LLMs**: Highly expressive, but bloated, slow (hundreds of milliseconds), costly, and non-deterministic for basic control flow tasks.
 
 ```
 Rigid Heuristics ──────────────▶ [ NeuroGo: The Sweet Spot ] ──────────────▶ Heavyweight LLMs
@@ -37,7 +37,7 @@ Rigid Heuristics ──────────────▶ [ NeuroGo: The Sw
 
 ### Bridging the Gap
 
-NeuroGo introduces a third scope: **lightweight, data-driven statistical branching**.
+NeuroGo introduces a third paradigm: **lightweight, data-driven statistical branching**.
 
 - **Flexibility without Bloat**: Maps inputs into a continuous semantic latent space rather than relying on discrete string matches, absorbing natural language variances without external dependencies.
 - **Microsecond In-Memory Execution**: Operates locally in pure Go (`CGO_ENABLED=0`) with kilobyte-scale weights, achieving sub-millisecond routing speeds on standard CPU cores.
@@ -77,7 +77,7 @@ In modern software engineering and MLOps, **model training (data science/optimiz
 - **Decoupled Architecture**: Clear boundary between offline training (`ngotrain`) and application runtime (`ngo`).
 - **Pure Go Inference Engine**: Zero external C/C++ dependencies (`CGO_ENABLED=0` friendly). Easily cross-compiles to a single static binary.
 - **100% Go Interoperability**: NeuroGo transpiles directly into clean, idiomatic Go code. Seamlessly import and use any standard library or third-party Go package (`net/http`, `sync`, etc.).
-- **Subword & Morphology Aware**: Built-in 2-gram / subword vectorization handles typos and linguistic variations out of the box.
+- **Subword & Morphology Aware**: Built-in character n-gram and subword vectorization handles typos and linguistic variations out of the box.
 - **Thread-Safe & Lock-Free**: In-memory immutable weight caches with zero-allocation buffers for massive Goroutine concurrency.
 
 ---
@@ -85,7 +85,7 @@ In modern software engineering and MLOps, **model training (data science/optimiz
 ## Language Syntax Specification
 
 ### `match` Statement
-Evaluates an expression using the specified weight file and routes execution based on predicted class labels and confidence scores:
+Evaluates an expression against the specified weight file and routes execution based on predicted class labels and confidence scores:
 
 ```go
 match query using "intent_model.gow" {
@@ -107,29 +107,29 @@ default:
 > **Working Directory Rule**: Always run terminal commands from the **root directory** of this repository (`NeuroGo/`).
 
 ```text
-NeuroGo/                       <-- Run all commands from this root folder
+NeuroGo/                        <-- Run all commands from this root folder
 ├── cmd/
-│   ├── ngo/                   # 'ngo' Application CLI (transpile, run, build)
+│   ├── ngo/                    # 'ngo' Application CLI (transpile, run, build)
 │   │   └── main.go
-│   └── ngotrain/              # 'ngotrain' Offline Training CLI
+│   └── ngotrain/               # 'ngotrain' Offline Training CLI
 │       └── main.go
 ├── pkg/
-│   ├── runtime/               # Model loading, tokenizer, and forward pass engine
+│   ├── runtime/                # Model loading, tokenizer, and forward pass engine
 │   │   └── runtime.go
-│   ├── transpiler/            # Source-to-source code transformer (.ngo -> .go)
+│   ├── transpiler/             # Source-to-source code transformer (.ngo -> .go)
 │   │   └── transpiler.go
-│   └── trainer/               # CSV dataset parser, vocab builder, and SGD optimizer
+│   └── trainer/                # CSV dataset parser, vocab builder, and SGD optimizer
 │       └── trainer.go
 ├── examples/
-│   └── intent/                # Customer intent routing example
-│       ├── dataset.csv        # Training samples
-│       ├── main.ngo           # NeuroGo source file
-│       ├── intent_model.gow   # Pre-trained weight artifact
-│       └── main.go            # Generated Go file
-├── neurogo_runner.py          # Standalone verification runner (Python 3 reference)
-├── go.mod                     # Go module file
-├── LICENSE                    # MIT License
-└── README.md                  # Documentation and manual
+│   └── intent/                 # Customer intent routing example
+│       ├── dataset.csv         # Training samples
+│       ├── main.ngo            # NeuroGo source file
+│       ├── intent_model.gow    # Pre-trained weight artifact
+│       └── main.go             # Generated Go file
+├── neurogo_runner.py           # Standalone verification runner (Python 3 reference)
+├── go.mod                      # Go module file
+├── LICENSE                     # MIT License
+└── README.md                   # Documentation and manual
 ```
 
 ---
@@ -178,10 +178,10 @@ The `ngotrain` utility parses `dataset.csv`, extracts the vocabulary, optimizes 
 [ngotrain] Starting training on 'examples/intent/dataset.csv' -> 'examples/intent/intent_model.gow' (epochs: 40)...
 [NeuroGo Trainer] Starting training for 'examples/intent/intent_model.gow' from 'examples/intent/dataset.csv'...
 [NeuroGo Trainer] Dataset parsed: 18 samples, 195 unique tokens, 3 classes: [Refund Delivery Inquiry]
-   Epoch [ 10/ 40] - Loss: 0.0191
-   Epoch [ 20/ 40] - Loss: 0.0098
-   Epoch [ 30/ 40] - Loss: 0.0066
-   Epoch [ 40/ 40] - Loss: 0.0050
+    Epoch [ 10/ 40] - Loss: 0.0191
+    Epoch [ 20/ 40] - Loss: 0.0098
+    Epoch [ 30/ 40] - Loss: 0.0066
+    Epoch [ 40/ 40] - Loss: 0.0050
 [NeuroGo Trainer] Successfully saved model to 'examples/intent/intent_model.gow'!
 [ngotrain] Successfully generated model weights: 'examples/intent/intent_model.gow'
 ```
@@ -198,8 +198,8 @@ ngo run examples/intent/main.ngo
 
 **What happens?**
 1. Transpiles `main.ngo` into valid standard Go code (`main.go`).
-2. Evaluates the test queries against the pre-trained weights using pure Go tensor operations.
-3. Dynamically branches to the matching `case` based on the predicted class and confidence score.
+2. Evaluates runtime queries against pre-trained weights using pure Go tensor operations.
+3. Dynamically branches to the matching `case` based on predicted class and confidence score.
 
 **Expected Output:**
 ```text
@@ -270,7 +270,7 @@ Verify your Go binary directory is included in your system `PATH`:
 - **macOS / Linux**: Add `export PATH=$PATH:$(go env GOPATH)/bin` to your `~/.bashrc` or `~/.zshrc`.
 
 ### 2. Can I update models without recompiling the application?
-Yes. Because `ngotrain` is strictly separated from `ngo`, you can retrain on updated datasets and overwrite `.gow` weight files at any time. The application runtime automatically picks up the updated weights without source modification.
+Yes. Because `ngotrain` is decoupled from `ngo`, you can retrain on updated datasets and overwrite `.gow` weight files at any time. The application runtime automatically picks up the updated weights without source modification or application rebuilding.
 
 ---
 
