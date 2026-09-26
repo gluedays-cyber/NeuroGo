@@ -73,19 +73,19 @@ In modern software engineering and MLOps, **model training (data science/optimiz
 
 ## Key Features
 
-- **Native Intelligent Branching (`match ... score`)**: Replace hundreds of brittle heuristic rules with data-driven weight inference[cite: 1].
+- **Native Intelligent Branching (`match ... score`)**: Replace hundreds of brittle heuristic rules with data-driven weight inference.
 - **Decoupled Architecture**: Clear boundary between offline training (`ngotrain`) and application runtime (`ngo`).
-- **Pure Go Inference Engine**: Zero external C/C++ dependencies (`CGO_ENABLED=0` friendly)[cite: 1]. Easily cross-compiles to a single static binary[cite: 1].
-- **100% Go Interoperability**: NeuroGo transpiles directly into clean, idiomatic Go code[cite: 1]. Seamlessly import and use any standard library or third-party Go package (`net/http`, `sync`, etc.)[cite: 1].
-- **Subword & Morphology Aware**: Built-in 2-gram / subword vectorization handles typos and linguistic variations out of the box[cite: 1].
-- **Thread-Safe & Lock-Free**: In-memory immutable weight caches with zero-allocation buffers for massive Goroutine concurrency[cite: 1].
+- **Pure Go Inference Engine**: Zero external C/C++ dependencies (`CGO_ENABLED=0` friendly). Easily cross-compiles to a single static binary.
+- **100% Go Interoperability**: NeuroGo transpiles directly into clean, idiomatic Go code. Seamlessly import and use any standard library or third-party Go package (`net/http`, `sync`, etc.).
+- **Subword & Morphology Aware**: Built-in 2-gram / subword vectorization handles typos and linguistic variations out of the box.
+- **Thread-Safe & Lock-Free**: In-memory immutable weight caches with zero-allocation buffers for massive Goroutine concurrency.
 
 ---
 
 ## Language Syntax Specification
 
 ### `match` Statement
-Evaluates an expression using the specified weight file and routes execution based on predicted class labels and confidence scores[cite: 1]:
+Evaluates an expression using the specified weight file and routes execution based on predicted class labels and confidence scores:
 
 ```go
 match query using "intent_model.gow" {
@@ -104,7 +104,7 @@ default:
 
 ## Project Structure
 
-> **Working Directory Rule**: Always run terminal commands from the **root directory** of this repository (`NeuroGo/`)[cite: 1].
+> **Working Directory Rule**: Always run terminal commands from the **root directory** of this repository (`NeuroGo/`).
 
 ```text
 NeuroGo/                       <-- Run all commands from this root folder
@@ -137,8 +137,8 @@ NeuroGo/                       <-- Run all commands from this root folder
 ## Step-by-Step Quickstart Guide
 
 ### Prerequisites
-- **Git** installed on your system (`git --version`)[cite: 1].
-- **Go 1.20+** installed on your system (`go version`)[cite: 1].
+- **Git** installed on your system (`git --version`).
+- **Go 1.20+** installed on your system (`go version`).
 
 ---
 
@@ -153,7 +153,7 @@ cd NeuroGo
 
 ### Step 1: Install Toolchains
 
-Install both the compiler toolchain (`ngo`) and the training tool (`ngotrain`)[cite: 1]:
+Install both the compiler toolchain (`ngo`) and the training tool (`ngotrain`):
 
 ```bash
 go install ./cmd/ngo
@@ -190,16 +190,16 @@ The `ngotrain` utility parses `dataset.csv`, extracts the vocabulary, optimizes 
 
 ### Step 3: Run Intelligent Branching (`ngo run`)
 
-Execute the program with real-time AI-based routing[cite: 1]:
+Execute the program with real-time AI-based routing:
 
 ```bash
 ngo run examples/intent/main.ngo
 ```
 
 **What happens?**
-1. Transpiles `main.ngo` into valid standard Go code (`main.go`)[cite: 1].
-2. Evaluates the test queries against the pre-trained weights using pure Go tensor operations[cite: 1].
-3. Dynamically branches to the matching `case` based on the predicted class and confidence score[cite: 1].
+1. Transpiles `main.ngo` into valid standard Go code (`main.go`).
+2. Evaluates the test queries against the pre-trained weights using pure Go tensor operations.
+3. Dynamically branches to the matching `case` based on the predicted class and confidence score.
 
 **Expected Output:**
 ```text
@@ -222,13 +222,13 @@ ngo run examples/intent/main.ngo
 
 ### Step 4: Inspect Generated Standard Go Code
 
-To inspect the generated code without immediate execution[cite: 1]:
+To inspect the generated code without immediate execution:
 
 ```bash
 ngo transpile examples/intent/main.ngo -o examples/intent/main.go
 ```
 
-Examine how NeuroGo maps `match` statements to standard Go control flow in `examples/intent/main.go`[cite: 1]:
+Examine how NeuroGo maps `match` statements to standard Go control flow in `examples/intent/main.go`:
 
 ```go
 {
@@ -250,7 +250,7 @@ Examine how NeuroGo maps `match` statements to standard Go control flow in `exam
 
 ## Standalone Python Simulation (No Go Compiler Required)
 
-To verify the tokenizer, SGD loop, and branching logic end-to-end without compiling[cite: 1]:
+To verify the tokenizer, SGD loop, and branching logic end-to-end without compiling:
 
 ```bash
 # Windows
@@ -265,9 +265,9 @@ python3 neurogo_runner.py
 ## Frequently Asked Questions (FAQ)
 
 ### 1. `ngo: command not found` or `'ngo' is not recognized`
-Verify your Go binary directory is included in your system `PATH`[cite: 1]:
-- **Windows**: Add `%USERPROFILE%\go\bin` to `PATH`[cite: 1].
-- **macOS / Linux**: Add `export PATH=$PATH:$(go env GOPATH)/bin` to your `~/.bashrc` or `~/.zshrc`[cite: 1].
+Verify your Go binary directory is included in your system `PATH`:
+- **Windows**: Add `%USERPROFILE%\go\bin` to `PATH`.
+- **macOS / Linux**: Add `export PATH=$PATH:$(go env GOPATH)/bin` to your `~/.bashrc` or `~/.zshrc`.
 
 ### 2. Can I update models without recompiling the application?
 Yes. Because `ngotrain` is strictly separated from `ngo`, you can retrain on updated datasets and overwrite `.gow` weight files at any time. The application runtime automatically picks up the updated weights without source modification.
@@ -276,6 +276,6 @@ Yes. Because `ngotrain` is strictly separated from `ngo`, you can retrain on upd
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details[cite: 1].
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Developed by [gluedays-cyber](https://github.com/gluedays-cyber)[cite: 1].
+Developed by [gluedays-cyber](https://github.com/gluedays-cyber).
